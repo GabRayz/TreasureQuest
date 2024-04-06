@@ -39,11 +39,19 @@ public class BoardParser {
         String[] parts = line.split(" - ", 0);
         if (parts.length != 6)
             throw new MapParsingException("Invalid number of parts in adventurer declaration");
-        int x = Integer.parseInt(parts[2]);
-        int y = Integer.parseInt(parts[3]);
         final String name = parts[1];
-        final Direction direction = Direction.fromLabel(parts[4]);
-        final List<Move> moves = Move.fromLabels(parts[5]);
+        final int x;
+        final int y;
+        final Direction direction;
+        final List<Move> moves;
+        try {
+            x = Integer.parseInt(parts[2]);
+            y = Integer.parseInt(parts[3]);
+            direction = Direction.fromLabel(parts[4]);
+            moves = Move.fromLabels(parts[5]);
+        } catch (IllegalArgumentException e) {
+            throw new MapParsingException("Invalid adventurer declaration", e);
+        }
 
         builder.addEntity(new AdventurerBuilder()
                 .setPosition(Position.of(x, y))
@@ -57,10 +65,16 @@ public class BoardParser {
         String[] parts = line.split(" - ", 0);
         if (parts.length != 4)
             throw new MapParsingException("Invalid number of parts in treasure declaration, expected 'T - {d} - {d} {d}'");
-        int x = Integer.parseInt(parts[1]);
-        int y = Integer.parseInt(parts[2]);
-        int count = Integer.parseInt(parts[3]);
-        Position position = Position.of(x, y);
+        final int count;
+        final Position position;
+        try {
+            final int x = Integer.parseInt(parts[1]);
+            final int y = Integer.parseInt(parts[2]);
+            count = Integer.parseInt(parts[3]);
+            position = Position.of(x, y);
+        } catch (NumberFormatException e) {
+            throw new MapParsingException("Invalid treasure declaration", e);
+        }
         for (int i = 0; i < count; i++) {
             builder.addEntity(new TreasureBuilder().setPosition(position));
         }
@@ -70,19 +84,31 @@ public class BoardParser {
         String[] parts = line.split(" - ", 0);
         if (parts.length != 3)
             throw new MapParsingException("Invalid number of parts in mountain declaration, expected 'M - {d} - {d}'");
-        int x = Integer.parseInt(parts[1]);
-        int y = Integer.parseInt(parts[2]);
-        builder.addEntity(new MountainBuilder().setPosition(Position.of(x, y)));
+        final Position position;
+        try {
+            final int x = Integer.parseInt(parts[1]);
+            final int y = Integer.parseInt(parts[2]);
+            position = Position.of(x, y);
+        } catch (IllegalArgumentException e) {
+            throw new MapParsingException("Invalid mountain definition", e);
+        }
+        builder.addEntity(new MountainBuilder().setPosition(position));
     }
 
     private void parseMapLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
         if (builder.height != 0 || builder.width != 0)
             throw new MapParsingException("Map size declared twice");
-        String[] parts = line.split(" - ", 0);
+        final String[] parts = line.split(" - ", 0);
         if (parts.length != 3)
             throw new MapParsingException("Invalid number of parts in map declaration, expected 'C - {d} - {d}'");
-        int width = Integer.parseInt(parts[1]);
-        int height = Integer.parseInt(parts[2]);
+        final int width;
+        final int height;
+        try {
+            width = Integer.parseInt(parts[1]);
+            height = Integer.parseInt(parts[2]);
+        } catch (NumberFormatException e) {
+            throw new MapParsingException("Invalid map declaration", e);
+        }
         builder.setWidth(width)
                 .setHeight(height);
     }

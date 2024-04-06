@@ -30,6 +30,12 @@ class BoardParserTest {
     }
 
     @Test
+    void parseNotNumbers() {
+        Assertions.assertThrows(MapParsingException.class,
+                () -> new BoardParser().parse("C - foo - bar"));
+    }
+
+    @Test
     void parseEmptyBoardDeclaredTwiceShouldThrow() {
         Assertions.assertThrows(MapParsingException.class,
                 () -> new BoardParser().parse("C - 3 - 4\nC - 1 - 1"));
@@ -42,6 +48,13 @@ class BoardParserTest {
 
         Assertions.assertTrue(board.hasMountain(Position.of(1, 1)));
         Assertions.assertFalse(board.hasMountain(Position.of(1, 2)));
+    }
+
+    @Test
+    void parseBoardInvalidMountainNegativePosition() {
+        Assertions.assertThrows(MapParsingException.class,
+                () -> new BoardParser().parse("C - 2 - 2\n" +
+                        "M - -1 - -2"));
     }
 
     @Test
@@ -74,5 +87,17 @@ class BoardParserTest {
         Assertions.assertEquals(Position.of(1, 1), john.getPosition());
         Assertions.assertEquals(Direction.SOUTH, john.getDirection());
         Assertions.assertEquals(List.of(Move.FORWARD, Move.RIGHT), john.getMoves());
+    }
+
+    @Test
+    void parseBoardAdventurerInvalidDirection() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "A - John - 1 - 1 - G - AD"));
+    }
+
+    @Test
+    void parseBoardAdventurerInvalidMoves() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "A - John - 1 - 1 - A - WWW"));
     }
 }
