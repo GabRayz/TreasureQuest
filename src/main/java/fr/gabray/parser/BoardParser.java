@@ -1,6 +1,8 @@
 package fr.gabray.parser;
 
 import fr.gabray.board.Board;
+import fr.gabray.board.Direction;
+import fr.gabray.board.Move;
 import fr.gabray.board.Position;
 import fr.gabray.exception.MapParsingException;
 import org.jetbrains.annotations.NotNull;
@@ -28,14 +30,33 @@ public class BoardParser {
             case 'C' -> parseMapLine(line, builder);
             case 'M' -> parseMountainLine(line, builder);
             case 'T' -> parseTreasure(line, builder);
+            case 'A' -> parseAdventurer(line, builder);
             default -> throw new MapParsingException();
         }
+    }
+
+    private void parseAdventurer(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
+        String[] parts = line.split(" - ", 0);
+        if (parts.length != 6)
+            throw new MapParsingException("Invalid number of parts in adventurer declaration");
+        int x = Integer.parseInt(parts[2]);
+        int y = Integer.parseInt(parts[3]);
+        final String name = parts[1];
+        final Direction direction = Direction.fromLabel(parts[4]);
+        final List<Move> moves = Move.fromLabels(parts[5]);
+
+        builder.addEntity(new AdventurerBuilder()
+                .setPosition(Position.of(x, y))
+                .setName(name)
+                .setDirection(direction)
+                .setMoves(moves)
+        );
     }
 
     private void parseTreasure(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
         String[] parts = line.split(" - ", 0);
         if (parts.length != 4)
-            throw new MapParsingException("Invalid number of parts in mountain declaration, expected 'T - {d} - {d} {d}'");
+            throw new MapParsingException("Invalid number of parts in treasure declaration, expected 'T - {d} - {d} {d}'");
         int x = Integer.parseInt(parts[1]);
         int y = Integer.parseInt(parts[2]);
         int count = Integer.parseInt(parts[3]);

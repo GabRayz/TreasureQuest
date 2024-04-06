@@ -13,7 +13,7 @@ public abstract class EntityBuilder<T extends EntityBuilder<T>> {
 
     public abstract Entity build(@NotNull final Board board);
 
-    public EntityBuilder<T> setPosition(Position position) {
+    public T setPosition(Position position) {
         this.position = position;
         return self();
     }

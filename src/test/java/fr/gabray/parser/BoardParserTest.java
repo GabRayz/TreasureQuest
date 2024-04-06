@@ -61,18 +61,18 @@ class BoardParserTest {
         Assertions.assertEquals(3, board.getTreasureCount(Position.of(1, 1)));
     }
 
-//    @Test
-//    void parseBoardAdventurer() throws MapParsingException {
-//        final Board board = new BoardParser().parse("C - 2 - 2\n" +
-//                "A - John - 1 - 1 - S - AD");
-//
-//        final List<Adventurer> adventurers = board.getAdventurers();
-//
-//        Assertions.assertEquals(1, adventurers.size());
-//        final Adventurer john = adventurers.get(0);
-//        Assertions.assertEquals("John", john.getName());
-//        Assertions.assertEquals(Position.of(1, 1), john.getPosition());
-//        Assertions.assertEquals(Direction.SOUTH, john.getDirection());
-//        Assertions.assertEquals(List.of(Move.FORWARD, Move.RIGHT), john.getMoves());
-//    }
+    @Test
+    void parseBoardAdventurer() throws MapParsingException {
+        final Board board = new BoardParser().parse("C - 2 - 2\n" +
+                "A - John - 1 - 1 - S - AD");
+
+        final List<Adventurer> adventurers = board.getAdventurers();
+
+        Assertions.assertEquals(1, adventurers.size());
+        final Adventurer john = adventurers.get(0);
+        Assertions.assertEquals("John", john.getName());
+        Assertions.assertEquals(Position.of(1, 1), john.getPosition());
+        Assertions.assertEquals(Direction.SOUTH, john.getDirection());
+        Assertions.assertEquals(List.of(Move.FORWARD, Move.RIGHT), john.getMoves());
+    }
 }

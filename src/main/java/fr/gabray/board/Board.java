@@ -39,8 +39,11 @@ public class Board {
                 .filter(entity -> entity.getPosition().equals(position))
                 .count();
     }
-//
-//    public List<Adventurer> getAdventurers() {
-//        return List.of();
-//    }
+
+    public List<Adventurer> getAdventurers() {
+        return entities.stream()
+                .filter(Adventurer.class::isInstance)
+                .map(Adventurer.class::cast)
+                .toList();
+    }
 }
