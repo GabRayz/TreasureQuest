@@ -1,8 +1,12 @@
 package fr.gabray.parser;
 
 import fr.gabray.board.Board;
+import fr.gabray.board.Position;
 import fr.gabray.exception.MapParsingException;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BoardParser {
 
@@ -22,8 +26,18 @@ public class BoardParser {
             return;
         switch (line.charAt(0)) {
             case 'C' -> parseMapLine(line, builder);
+            case 'M' -> parseMountainLine(line, builder);
             default -> throw new MapParsingException();
         }
+    }
+
+    private void parseMountainLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
+        String[] parts = line.split(" - ", 0);
+        if (parts.length != 3)
+            throw new MapParsingException("Invalid number of parts in mountain declaration, expected 'M - {d} - {d}'");
+        int x = Integer.parseInt(parts[1]);
+        int y = Integer.parseInt(parts[2]);
+        builder.addEntity(new MountainBuilder().setPosition(Position.of(x, y)));
     }
 
     private void parseMapLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
@@ -41,6 +55,7 @@ public class BoardParser {
     private static final class BoardBuilder {
         private int width;
         private int height;
+        private final List<EntityBuilder<?>> entityBuilders = new ArrayList<>();
 
         public BoardBuilder setWidth(int width) {
             this.width = width;
@@ -52,10 +67,19 @@ public class BoardParser {
             return this;
         }
 
+        public BoardBuilder addEntity(@NotNull final EntityBuilder<?> entityBuilder) {
+            this.entityBuilders.add(entityBuilder);
+            return this;
+        }
+
         public Board build() throws MapParsingException {
             if (width <= 0 || height <= 0)
                 throw new MapParsingException("Invalid map size");
-            return new Board(width, height);
+            Board board = new Board(width, height);
+            entityBuilders.stream()
+                    .map(builder -> builder.build(board))
+                    .forEach(board::addEntity);
+            return board;
         }
     }
 }

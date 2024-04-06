@@ -35,14 +35,14 @@ class BoardParserTest {
                 () -> new BoardParser().parse("C - 3 - 4\nC - 1 - 1"));
     }
 
-//    @Test
-//    void parseBoardWithOneMountain() {
-//        final Board board = new BoardParser().parse("C - 2 - 2\n" +
-//                "M - 1 - 1");
-//
-//        Assertions.assertTrue(board.hasMountain(Position.of(1, 1)));
-//        Assertions.assertFalse(board.hasMountain(Position.of(1, 2)));
-//    }
+    @Test
+    void parseBoardWithOneMountain() throws MapParsingException {
+        final Board board = new BoardParser().parse("C - 2 - 2\n" +
+                "M - 1 - 1");
+
+        Assertions.assertTrue(board.hasMountain(Position.of(1, 1)));
+        Assertions.assertFalse(board.hasMountain(Position.of(1, 2)));
+    }
 //
 //    @Test
 //    void parseBoardWithOneTreasure() {
