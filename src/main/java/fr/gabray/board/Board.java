@@ -32,10 +32,13 @@ public class Board {
     public void addEntity(@NotNull final Entity entity) {
         entities.add(entity);
     }
-//
-//    public int getTreasureCount(@NotNull final Position position) {
-//        return 0;
-//    }
+
+    public int getTreasureCount(@NotNull final Position position) {
+        return (int) entities.stream()
+                .filter(Treasure.class::isInstance)
+                .filter(entity -> entity.getPosition().equals(position))
+                .count();
+    }
 //
 //    public List<Adventurer> getAdventurers() {
 //        return List.of();

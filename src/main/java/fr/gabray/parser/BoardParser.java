@@ -27,7 +27,21 @@ public class BoardParser {
         switch (line.charAt(0)) {
             case 'C' -> parseMapLine(line, builder);
             case 'M' -> parseMountainLine(line, builder);
+            case 'T' -> parseTreasure(line, builder);
             default -> throw new MapParsingException();
+        }
+    }
+
+    private void parseTreasure(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
+        String[] parts = line.split(" - ", 0);
+        if (parts.length != 4)
+            throw new MapParsingException("Invalid number of parts in mountain declaration, expected 'T - {d} - {d} {d}'");
+        int x = Integer.parseInt(parts[1]);
+        int y = Integer.parseInt(parts[2]);
+        int count = Integer.parseInt(parts[3]);
+        Position position = Position.of(x, y);
+        for (int i = 0; i < count; i++) {
+            builder.addEntity(new TreasureBuilder().setPosition(position));
         }
     }
 

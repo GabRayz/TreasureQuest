@@ -43,26 +43,26 @@ class BoardParserTest {
         Assertions.assertTrue(board.hasMountain(Position.of(1, 1)));
         Assertions.assertFalse(board.hasMountain(Position.of(1, 2)));
     }
-//
+
+    @Test
+    void parseBoardWithOneTreasure() throws MapParsingException {
+        final Board board = new BoardParser().parse("C - 2 - 2\n" +
+                "T - 1 - 1 - 1");
+
+        Assertions.assertEquals(1, board.getTreasureCount(Position.of(1, 1)));
+        Assertions.assertEquals(0, board.getTreasureCount(Position.of(1, 2)));
+    }
+
+    @Test
+    void parseBoardWithMultipleTreasures() throws MapParsingException {
+        final Board board = new BoardParser().parse("C - 2 - 2\n" +
+                "T - 1 - 1 - 3");
+
+        Assertions.assertEquals(3, board.getTreasureCount(Position.of(1, 1)));
+    }
+
 //    @Test
-//    void parseBoardWithOneTreasure() {
-//        final Board board = new BoardParser().parse("C - 2 - 2\n" +
-//                "T - 1 - 1 - 1");
-//
-//        Assertions.assertEquals(1, board.getTreasureCount(Position.of(1, 1)));
-//        Assertions.assertEquals(0, board.getTreasureCount(Position.of(1, 2)));
-//    }
-//
-//    @Test
-//    void parseBoardWithMultipleTreasures() {
-//        final Board board = new BoardParser().parse("C - 2 - 2\n" +
-//                "T - 1 - 1 - 3");
-//
-//        Assertions.assertEquals(3, board.getTreasureCount(Position.of(1, 1)));
-//    }
-//
-//    @Test
-//    void parseBoardAdventurer() {
+//    void parseBoardAdventurer() throws MapParsingException {
 //        final Board board = new BoardParser().parse("C - 2 - 2\n" +
 //                "A - John - 1 - 1 - S - AD");
 //
