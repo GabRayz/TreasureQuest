@@ -38,6 +38,11 @@ public class Board {
                 .anyMatch(entity -> entity instanceof Mountain && entity.getPosition().equals(position));
     }
 
+    public <T extends Entity> boolean hasEntity(@NotNull final Class<T> type, @NotNull final Position position) {
+        return entities.stream()
+                .anyMatch(entity -> type.isInstance(entity) && entity.getPosition().equals(position));
+    }
+
     /**
      * Add a new entity to the map
      *

@@ -2,6 +2,7 @@ package fr.gabray.board;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Adventurer extends Entity {
@@ -15,7 +16,7 @@ public class Adventurer extends Entity {
         super(board, position);
         this.name = name;
         this.direction = direction;
-        this.moves = moves;
+        this.moves = new ArrayList<>(moves);
     }
 
     @NotNull
@@ -57,7 +58,7 @@ public class Adventurer extends Entity {
             if (newPosition.equals(position) || !board.isPositionValid(newPosition)) {
                 return false;
             }
-            if (board.hasMountain(newPosition)) {
+            if (board.hasMountain(newPosition) || board.hasEntity(Adventurer.class, newPosition)) {
                 return false;
             }
             // Move

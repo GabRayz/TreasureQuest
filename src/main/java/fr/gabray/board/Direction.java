@@ -17,12 +17,12 @@ public enum Direction {
     EAST("E") {
         @Override
         public Direction left() {
-            return SOUTH;
+            return NORTH;
         }
 
         @Override
         public Direction right() {
-            return NORTH;
+            return SOUTH;
         }
     },
     SOUTH("S") {
