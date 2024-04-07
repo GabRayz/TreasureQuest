@@ -1,10 +1,11 @@
 package fr.gabray.board;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class AdventurerTest {
 
@@ -14,12 +15,12 @@ class AdventurerTest {
 
         Adventurer adventurer = new Adventurer(board, Position.of(0, 0), "John", Direction.SOUTH, new ArrayList<>(List.of(Move.FORWARD)));
 
-        Assertions.assertTrue(adventurer.hasNextMove());
+        assertTrue(adventurer.hasNextMove());
         boolean moved = adventurer.move();
-        Assertions.assertTrue(moved);
-        Assertions.assertFalse(adventurer.hasNextMove());
-        Assertions.assertEquals(Position.of(0, 1), adventurer.getPosition());
-        Assertions.assertEquals(Direction.SOUTH, adventurer.getDirection());
+        assertTrue(moved);
+        assertFalse(adventurer.hasNextMove());
+        assertEquals(Position.of(0, 1), adventurer.getPosition());
+        assertEquals(Direction.SOUTH, adventurer.getDirection());
     }
 
     @Test
@@ -28,12 +29,12 @@ class AdventurerTest {
 
         Adventurer adventurer = new Adventurer(board, Position.of(0, 0), "John", Direction.SOUTH, new ArrayList<>());
 
-        Assertions.assertFalse(adventurer.hasNextMove());
+        assertFalse(adventurer.hasNextMove());
         boolean moved = adventurer.move();
-        Assertions.assertFalse(moved);
-        Assertions.assertFalse(adventurer.hasNextMove());
-        Assertions.assertEquals(Position.of(0, 0), adventurer.getPosition());
-        Assertions.assertEquals(Direction.SOUTH, adventurer.getDirection());
+        assertFalse(moved);
+        assertFalse(adventurer.hasNextMove());
+        assertEquals(Position.of(0, 0), adventurer.getPosition());
+        assertEquals(Direction.SOUTH, adventurer.getDirection());
     }
 
     @Test
@@ -43,14 +44,14 @@ class AdventurerTest {
         Adventurer adventurer = new Adventurer(board, Position.of(0, 0), "John", Direction.SOUTH, new ArrayList<>(List.of(Move.FORWARD, Move.RIGHT)));
 
         boolean moved = adventurer.move();
-        Assertions.assertTrue(moved);
-        Assertions.assertEquals(Position.of(0, 1), adventurer.getPosition());
-        Assertions.assertEquals(Direction.SOUTH, adventurer.getDirection());
+        assertTrue(moved);
+        assertEquals(Position.of(0, 1), adventurer.getPosition());
+        assertEquals(Direction.SOUTH, adventurer.getDirection());
 
         moved = adventurer.move();
-        Assertions.assertTrue(moved);
-        Assertions.assertFalse(adventurer.hasNextMove());
-        Assertions.assertEquals(Direction.WEST, adventurer.getDirection());
+        assertTrue(moved);
+        assertFalse(adventurer.hasNextMove());
+        assertEquals(Direction.WEST, adventurer.getDirection());
     }
 
     @Test
@@ -59,9 +60,33 @@ class AdventurerTest {
 
         Adventurer adventurer = new Adventurer(board, Position.of(0, 0), "John", Direction.NORTH, new ArrayList<>(List.of(Move.FORWARD)));
 
-        Assertions.assertTrue(adventurer.hasNextMove());
+        assertTrue(adventurer.hasNextMove());
         boolean moved = adventurer.move();
-        Assertions.assertFalse(moved);
-        Assertions.assertFalse(adventurer.hasNextMove());
+        assertFalse(moved);
+        assertFalse(adventurer.hasNextMove());
+    }
+
+    @Test
+    void moveWithObstacle() {
+        Board board = new Board(2, 2);
+        board.addEntity(new Mountain(board, Position.of(0, 1))); // Should block forward move
+
+        Adventurer adventurer = new Adventurer(board, Position.of(0, 0), "John", Direction.SOUTH, new ArrayList<>(List.of(Move.FORWARD)));
+
+        assertTrue(adventurer.hasNextMove());
+        boolean moved = adventurer.move();
+        assertFalse(moved);
+    }
+
+    @Test
+    void moveWithObstacleNotBlocking() {
+        Board board = new Board(2, 2);
+        board.addEntity(new Mountain(board, Position.of(1, 1))); // Should not block
+
+        Adventurer adventurer = new Adventurer(board, Position.of(0, 0), "John", Direction.SOUTH, new ArrayList<>(List.of(Move.FORWARD)));
+
+        assertTrue(adventurer.hasNextMove());
+        boolean moved = adventurer.move();
+        assertTrue(moved);
     }
 }

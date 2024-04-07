@@ -55,6 +55,9 @@ public class Adventurer extends Entity {
             if (newPosition.equals(position) || !board.isPositionValid(newPosition)) {
                 return false;
             }
+            if (board.hasMountain(newPosition)) {
+                return false;
+            }
             this.position = newPosition;
         } else {
             this.direction = direction.rotate(move);
