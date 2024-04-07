@@ -66,4 +66,8 @@ public class Board {
                 .map(Adventurer.class::cast)
                 .toList();
     }
+
+    public boolean isPositionValid(@NotNull final Position position) {
+        return position.x() < width && position.y() < height;
+    }
 }

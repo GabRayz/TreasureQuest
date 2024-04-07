@@ -11,6 +11,25 @@ import org.jetbrains.annotations.NotNull;
 public record Position(int x, int y) {
 
     /**
+     * Return a new Position resulting of a forward move in the given direction
+     *
+     * @param direction Direction of the move
+     * @return New Position, or same if the move would have resulting in a negative coordinate.
+     */
+    public Position moveInDirection(@NotNull final Direction direction) {
+        try {
+            return switch (direction) {
+                case NORTH -> Position.of(x, y - 1);
+                case EAST -> Position.of(x + 1, y);
+                case SOUTH -> Position.of(x, y + 1);
+                case WEST -> Position.of(x - 1, y);
+            };
+        } catch (IllegalArgumentException e) {
+            return this;
+        }
+    }
+
+    /**
      * Return a Position from the given coordinates
      *
      * @param x X-axis coordinate

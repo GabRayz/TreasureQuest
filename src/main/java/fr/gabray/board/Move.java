@@ -8,6 +8,7 @@ import java.util.List;
 public enum Move {
     FORWARD("A"),
     RIGHT("D"),
+    LEFT("G"),
     ;
 
     private final String label;
