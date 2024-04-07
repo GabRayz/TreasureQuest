@@ -19,6 +19,14 @@ public class Adventurer extends Entity {
         this.moves = new ArrayList<>(moves);
     }
 
+    public Adventurer(@NotNull Board board, @NotNull Position position, @NotNull final String name, Direction direction, List<Move> moves, int collectedTreasureCount) {
+        super(board, position);
+        this.name = name;
+        this.direction = direction;
+        this.moves = new ArrayList<>(moves);
+        this.collectedTreasureCount = collectedTreasureCount;
+    }
+
     @NotNull
     public String getName() {
         return name;
@@ -75,5 +83,15 @@ public class Adventurer extends Entity {
 
     public int getCollectedTreasureCount() {
         return collectedTreasureCount;
+    }
+
+    @Override
+    public @NotNull String serialize() {
+        return String.format("A - %s - %d - %d - %s - %d",
+                getName(),
+                getPosition().x(),
+                getPosition().y(),
+                getDirection().getLabel(),
+                getCollectedTreasureCount());
     }
 }

@@ -74,6 +74,10 @@ public enum Direction {
 
     public abstract Direction right();
 
+    public String getLabel() {
+        return label;
+    }
+
     @NotNull
     public static Direction fromLabel(@NotNull final String label) throws IllegalArgumentException {
         for (Direction value : values()) {

@@ -21,4 +21,7 @@ public abstract class Entity {
     public Position getPosition() {
         return position;
     }
+
+    @NotNull
+    public abstract String serialize();
 }

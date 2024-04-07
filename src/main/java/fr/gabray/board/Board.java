@@ -86,4 +86,8 @@ public class Board {
     public boolean isPositionValid(@NotNull final Position position) {
         return position.x() < width && position.y() < height;
     }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
 }
