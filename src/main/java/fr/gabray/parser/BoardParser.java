@@ -81,9 +81,7 @@ public class BoardParser {
         } catch (NumberFormatException e) {
             throw new MapParsingException("Invalid treasure declaration", e);
         }
-        for (int i = 0; i < count; i++) {
-            builder.addEntity(new TreasureBuilder().setPosition(position));
-        }
+        builder.addEntity(new TreasureBuilder().setPosition(position).setCount(count));
     }
 
     private void parseMountainLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {

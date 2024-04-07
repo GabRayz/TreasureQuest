@@ -117,8 +117,7 @@ class AdventurerTest {
     @Test
     void collectMultipleTreasureShouldTakeOnlyOne() {
         Board board = new Board(2, 2);
-        board.addEntity(new Treasure(board, Position.of(0, 1)));
-        board.addEntity(new Treasure(board, Position.of(0, 1)));
+        board.addEntity(new Treasure(board, Position.of(0, 1), 2));
 
         Adventurer adventurer = new Adventurer(board, Position.of(0, 0), "John", Direction.SOUTH, new ArrayList<>(List.of(Move.FORWARD)));
 

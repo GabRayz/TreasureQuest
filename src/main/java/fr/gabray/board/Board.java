@@ -43,12 +43,19 @@ public class Board {
                 .anyMatch(entity -> type.isInstance(entity) && entity.getPosition().equals(position));
     }
 
+    public boolean hasEntity(@NotNull final Position position) {
+        return entities.stream()
+                .anyMatch(entity -> entity.getPosition().equals(position));
+    }
+
     /**
      * Add a new entity to the map
      *
      * @param entity Entity to add
      */
     public void addEntity(@NotNull final Entity entity) {
+        if (hasEntity(entity.getPosition()))
+            throw new IllegalArgumentException("Entity already present at that position");
         entities.add(entity);
     }
 
@@ -56,10 +63,13 @@ public class Board {
      * Count the number of treasures present at the given position
      */
     public int getTreasureCount(@NotNull final Position position) {
-        return (int) entities.stream()
+        return entities.stream()
                 .filter(Treasure.class::isInstance)
+                .map(Treasure.class::cast)
                 .filter(entity -> entity.getPosition().equals(position))
-                .count();
+                .findFirst()
+                .map(Treasure::getCount)
+                .orElse(0);
     }
 
     /**
@@ -68,9 +78,14 @@ public class Board {
     public void collectTreasure(@NotNull final Position position) {
         entities.stream()
                 .filter(Treasure.class::isInstance)
+                .map(Treasure.class::cast)
                 .filter(entity -> entity.getPosition().equals(position))
                 .findFirst()
-                .ifPresent(entities::remove);
+                .ifPresent(entity -> {
+                    if (entity.collect() == 0) {
+                        entities.remove(entity);
+                    }
+                });
     }
 
     /**

@@ -42,9 +42,7 @@ class SerializerTest {
     @Test
     void serializeMultipleTreasures() {
         Board board = new Board(5, 5);
-        board.addEntity(new Treasure(board, Position.of(1, 1)));
-        board.addEntity(new Treasure(board, Position.of(1, 1)));
-        board.addEntity(new Treasure(board, Position.of(1, 1)));
+        board.addEntity(new Treasure(board, Position.of(1, 1), 3));
 
         final String output = new BoardSerializer().serialize(board);
 
