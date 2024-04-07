@@ -12,6 +12,12 @@ import java.util.List;
 
 public class BoardParser {
 
+    /**
+     * Parse the board represented in input
+     *
+     * @param input Serialized board
+     * @throws MapParsingException If input is not a valid representation of a board
+     */
     public Board parse(@NotNull final String input) throws MapParsingException {
         final String[] lines = input.split("\n");
         final BoardBuilder builder = new BoardBuilder();
