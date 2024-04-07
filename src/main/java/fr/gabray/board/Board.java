@@ -58,6 +58,17 @@ public class Board {
     }
 
     /**
+     * Remove at most one treasure at the given position.
+     */
+    public void collectTreasure(@NotNull final Position position) {
+        entities.stream()
+                .filter(Treasure.class::isInstance)
+                .filter(entity -> entity.getPosition().equals(position))
+                .findFirst()
+                .ifPresent(entities::remove);
+    }
+
+    /**
      * @return All placed adventurers
      */
     public List<Adventurer> getAdventurers() {

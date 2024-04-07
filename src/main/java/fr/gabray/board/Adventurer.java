@@ -9,6 +9,7 @@ public class Adventurer extends Entity {
     private final String name;
     private Direction direction;
     private final List<Move> moves;
+    private int collectedTreasureCount = 0;
 
     public Adventurer(@NotNull Board board, @NotNull Position position, @NotNull final String name, Direction direction, List<Move> moves) {
         super(board, position);
@@ -41,7 +42,8 @@ public class Adventurer extends Entity {
 
     /**
      * Execute next move and update the adventurer's position and direction. Do nothing if the move is blocked by an
-     * obstacle or map limits, or if there is no remaining move. Remove the move from the move list.
+     * obstacle or map limits, or if there is no remaining move. Remove the move from the move list.<br/>
+     * Collect Treasures found on the way.
      *
      * @return True if the adventurer has moved
      */
@@ -58,10 +60,19 @@ public class Adventurer extends Entity {
             if (board.hasMountain(newPosition)) {
                 return false;
             }
+            // Move
             this.position = newPosition;
+            if (board.getTreasureCount(position) > 0) {
+                collectedTreasureCount++;
+                board.collectTreasure(position);
+            }
         } else {
             this.direction = direction.rotate(move);
         }
         return true;
+    }
+
+    public int getCollectedTreasureCount() {
+        return collectedTreasureCount;
     }
 }
