@@ -8,6 +8,7 @@ import fr.gabray.serializer.BoardSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,35 +18,36 @@ public class Main {
     private static final Logger logger = Logger.getLogger("Main");
 
     public static void main(String[] args) {
-        if (args.length == 0) {
-            logger.log(Level.SEVERE, "Usage: main {filename}");
+        if (args.length != 2) {
+            logger.log(Level.SEVERE, "Usage: main {inputFilename} {outputFilename}");
             return;
         }
 
-        final String filePath = args[0];
         try {
-            final String input = readInputFromFile(filePath);
-
-            final Board board = new BoardParser().parse(input);
+            final Board board = parseBoard(args[0]);
 
             GameEngine engine = new GameEngine(board);
             engine.start();
 
-            String output = new BoardSerializer().serialize(board);
-            logger.log(Level.INFO, () -> "Result:\n" + output);
-            logger.log(Level.INFO, "Collected treasures:");
-            board.getAdventurers().forEach(adventurer -> logger.log(Level.INFO, () -> adventurer.getName() + ": " + adventurer.getCollectedTreasureCount()));
+            serializeBoard(args[1], board);
         } catch (final IOException e) {
-            logger.log(Level.SEVERE, "Failed to read file", e);
+            logger.log(Level.SEVERE, "Failed to read/write file", e);
         } catch (final MapParsingException e) {
             logger.log(Level.SEVERE, "Invalid map", e);
         }
     }
 
+    private static void serializeBoard(@NotNull final String path, @NotNull final Board board) throws IOException {
+        try (var stream = new FileOutputStream(path)) {
+            stream.write(new BoardSerializer().serialize(board).getBytes());
+        }
+    }
+
     @NotNull
-    private static String readInputFromFile(@NotNull final String filename) throws IOException {
+    private static Board parseBoard(@NotNull final String filename) throws IOException, MapParsingException {
         try (var stream = new FileInputStream(filename)) {
-            return new String(stream.readAllBytes());
+            String input = new String(stream.readAllBytes());
+            return new BoardParser().parse(input);
         }
     }
 }
