@@ -3,6 +3,7 @@ package fr.gabray.board;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,11 +39,20 @@ public class Board {
                 .anyMatch(entity -> entity instanceof Mountain && entity.getPosition().equals(position));
     }
 
+    /**
+     * @param type     Type of entity to check
+     * @param position Position to check
+     * @param <T>      Entity class type
+     * @return True if an entity of given type is present at the given position
+     */
     public <T extends Entity> boolean hasEntity(@NotNull final Class<T> type, @NotNull final Position position) {
         return entities.stream()
                 .anyMatch(entity -> type.isInstance(entity) && entity.getPosition().equals(position));
     }
 
+    /**
+     * Check if an entity of any type is present at the given position
+     */
     public boolean hasEntity(@NotNull final Position position) {
         return entities.stream()
                 .anyMatch(entity -> entity.getPosition().equals(position));
@@ -89,8 +99,9 @@ public class Board {
     }
 
     /**
-     * @return All placed adventurers
+     * @return Immutable list of all placed adventurers
      */
+    @NotNull
     public List<Adventurer> getAdventurers() {
         return entities.stream()
                 .filter(Adventurer.class::isInstance)
@@ -98,11 +109,20 @@ public class Board {
                 .toList();
     }
 
+    /**
+     * Check if the given Position is within the map's boundaries
+     */
     public boolean isPositionValid(@NotNull final Position position) {
         return position.x() < width && position.y() < height;
     }
 
+    /**
+     * The list of all entities present on the map
+     *
+     * @return <b>Immutable</b> list of entities
+     */
+    @NotNull
     public List<Entity> getEntities() {
-        return entities;
+        return Collections.unmodifiableList(entities);
     }
 }

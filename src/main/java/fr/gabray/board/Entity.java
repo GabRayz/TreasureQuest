@@ -22,6 +22,9 @@ public abstract class Entity {
         return position;
     }
 
+    /**
+     * Return the text representation of the entity for serialization
+     */
     @NotNull
     public abstract String serialize();
 }
