@@ -7,7 +7,6 @@ import fr.gabray.board.Position;
 import fr.gabray.exception.MapParsingException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BoardParser {
@@ -100,7 +99,7 @@ public class BoardParser {
     }
 
     private void parseMapLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
-        if (builder.height != 0 || builder.width != 0)
+        if (builder.getHeight() != 0 || builder.getWidth() != 0)
             throw new MapParsingException("Map size declared twice");
         final String[] parts = line.split(" - ", 0);
         if (parts.length != 3)
@@ -117,38 +116,4 @@ public class BoardParser {
                 .setHeight(height);
     }
 
-    private static final class BoardBuilder {
-        private int width;
-        private int height;
-        private final List<EntityBuilder<?>> entityBuilders = new ArrayList<>();
-
-        public BoardBuilder setWidth(int width) {
-            this.width = width;
-            return this;
-        }
-
-        public BoardBuilder setHeight(int height) {
-            this.height = height;
-            return this;
-        }
-
-        public BoardBuilder addEntity(@NotNull final EntityBuilder<?> entityBuilder) {
-            this.entityBuilders.add(entityBuilder);
-            return this;
-        }
-
-        public Board build() throws MapParsingException {
-            if (width <= 0 || height <= 0)
-                throw new MapParsingException("Invalid map size");
-            Board board = new Board(width, height);
-            try {
-                entityBuilders.stream()
-                        .map(builder -> builder.build(board))
-                        .forEach(board::addEntity);
-            } catch (IllegalArgumentException e) {
-                throw new MapParsingException("Failed to parse board entities", e);
-            }
-            return board;
-        }
-    }
 }
