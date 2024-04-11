@@ -1,12 +1,10 @@
 package fr.gabray.parser;
 
-import fr.gabray.board.Board;
-import fr.gabray.board.Direction;
-import fr.gabray.board.Move;
-import fr.gabray.board.Position;
+import fr.gabray.board.*;
 import fr.gabray.exception.MapParsingException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BoardParser {
@@ -19,28 +17,57 @@ public class BoardParser {
      */
     public Board parse(@NotNull final String input) throws MapParsingException {
         final String[] lines = input.split("\n");
-        final BoardBuilder builder = new BoardBuilder();
 
+        Board board = null;
+        final List<IEntityBuilder> entityBuilders = new ArrayList<>();
+        // Parse line by line
         for (String line : lines) {
-            parseLine(line, builder);
+            if (line.isBlank())
+                continue;
+
+            if (line.charAt(0) == 'C') {
+                // Construct the board
+                if (board != null)
+                    throw new MapParsingException("Map size declared twice");
+                board = parseMapLine(line);
+            } else {
+                // Parse entity
+                // We may not have a board yet, so store only the builders
+                final IEntityBuilder entityBuilder = parseEntityLine(line);
+                entityBuilders.add(entityBuilder);
+            }
         }
 
-        return builder.build();
+        if (board == null) {
+            throw new MapParsingException("No map declaration");
+        }
+        // Now that we have a board, build all entities
+        for (IEntityBuilder entityBuilder : entityBuilders) {
+            try {
+                board.addEntity(entityBuilder.build(board));
+            } catch (IllegalArgumentException e) {
+                throw new MapParsingException("Failed to parse board entities", e);
+            }
+        }
+
+        return board;
     }
 
-    private void parseLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
+    /**
+     * @throws IllegalArgumentException if line is blank
+     */
+    private IEntityBuilder parseEntityLine(@NotNull final String line) throws MapParsingException, IllegalArgumentException {
         if (line.isBlank())
-            return;
-        switch (line.charAt(0)) {
-            case 'C' -> parseMapLine(line, builder);
-            case 'M' -> parseMountainLine(line, builder);
-            case 'T' -> parseTreasure(line, builder);
-            case 'A' -> parseAdventurer(line, builder);
+            throw new IllegalArgumentException("Line is blank");
+        return switch (line.charAt(0)) {
+            case 'M' -> parseMountainLine(line);
+            case 'T' -> parseTreasure(line);
+            case 'A' -> parseAdventurer(line);
             default -> throw new MapParsingException();
-        }
+        };
     }
 
-    private void parseAdventurer(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
+    private IEntityBuilder parseAdventurer(@NotNull final String line) throws MapParsingException {
         String[] parts = line.split(" - ", 0);
         if (parts.length != 6)
             throw new MapParsingException("Invalid number of parts in adventurer declaration");
@@ -58,15 +85,10 @@ public class BoardParser {
             throw new MapParsingException("Invalid adventurer declaration", e);
         }
 
-        builder.addEntity(new AdventurerBuilder()
-                .setPosition(Position.of(x, y))
-                .setName(name)
-                .setDirection(direction)
-                .setMoves(moves)
-        );
+        return board -> new Adventurer(board, Position.of(x, y), name, direction, moves);
     }
 
-    private void parseTreasure(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
+    private IEntityBuilder parseTreasure(@NotNull final String line) throws MapParsingException {
         String[] parts = line.split(" - ", 0);
         if (parts.length != 4)
             throw new MapParsingException("Invalid number of parts in treasure declaration, expected 'T - {d} - {d} {d}'");
@@ -80,10 +102,11 @@ public class BoardParser {
         } catch (NumberFormatException e) {
             throw new MapParsingException("Invalid treasure declaration", e);
         }
-        builder.addEntity(new TreasureBuilder().setPosition(position).setCount(count));
+
+        return board -> new Treasure(board, position, count);
     }
 
-    private void parseMountainLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
+    private IEntityBuilder parseMountainLine(@NotNull final String line) throws MapParsingException {
         String[] parts = line.split(" - ", 0);
         if (parts.length != 3)
             throw new MapParsingException("Invalid number of parts in mountain declaration, expected 'M - {d} - {d}'");
@@ -95,12 +118,11 @@ public class BoardParser {
         } catch (IllegalArgumentException e) {
             throw new MapParsingException("Invalid mountain definition", e);
         }
-        builder.addEntity(new MountainBuilder().setPosition(position));
+
+        return board -> new Mountain(board, position);
     }
 
-    private void parseMapLine(@NotNull final String line, @NotNull final BoardBuilder builder) throws MapParsingException {
-        if (builder.getHeight() != 0 || builder.getWidth() != 0)
-            throw new MapParsingException("Map size declared twice");
+    private Board parseMapLine(@NotNull final String line) throws MapParsingException {
         final String[] parts = line.split(" - ", 0);
         if (parts.length != 3)
             throw new MapParsingException("Invalid number of parts in map declaration, expected 'C - {d} - {d}'");
@@ -112,8 +134,7 @@ public class BoardParser {
         } catch (NumberFormatException e) {
             throw new MapParsingException("Invalid map declaration", e);
         }
-        builder.setWidth(width)
-                .setHeight(height);
+        return new Board(width, height);
     }
 
 }

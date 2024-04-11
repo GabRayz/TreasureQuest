@@ -62,8 +62,9 @@ public class Board {
      * Add a new entity to the map
      *
      * @param entity Entity to add
+     * @throws IllegalArgumentException If an entity is already present at that position
      */
-    public void addEntity(@NotNull final Entity entity) {
+    public void addEntity(@NotNull final Entity entity) throws IllegalArgumentException {
         if (hasEntity(entity.getPosition()))
             throw new IllegalArgumentException("Entity already present at that position");
         entities.add(entity);
