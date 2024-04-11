@@ -33,6 +33,8 @@ public class Main {
 
             String output = new BoardSerializer().serialize(board);
             logger.log(Level.INFO, () -> "Result:\n" + output);
+            logger.log(Level.INFO, "Collected treasures:");
+            board.getAdventurers().forEach(adventurer -> logger.log(Level.INFO, () -> adventurer.getName() + ": " + adventurer.getCollectedTreasureCount()));
         } catch (final IOException e) {
             logger.log(Level.SEVERE, "Failed to read file", e);
         } catch (final MapParsingException e) {
