@@ -6,7 +6,7 @@ mvn package
 
 # Usage
 ```
-java -jar target/TresorQuest-1.0-SNAPSHOT.jar <filename>
+java -jar target/TresorQuest-1.0-SNAPSHOT.jar {inputFile} {outputFile}
 ```
 
 # TODO
