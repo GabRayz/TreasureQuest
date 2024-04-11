@@ -26,4 +26,8 @@ public class GameEngine {
             movesRemaining = board.getAdventurers().stream().anyMatch(Adventurer::hasNextMove);
         }
     }
+
+    public Board getBoard() {
+        return board;
+    }
 }
