@@ -141,9 +141,13 @@ public class BoardParser {
             if (width <= 0 || height <= 0)
                 throw new MapParsingException("Invalid map size");
             Board board = new Board(width, height);
-            entityBuilders.stream()
-                    .map(builder -> builder.build(board))
-                    .forEach(board::addEntity);
+            try {
+                entityBuilders.stream()
+                        .map(builder -> builder.build(board))
+                        .forEach(board::addEntity);
+            } catch (IllegalArgumentException e) {
+                throw new MapParsingException("Failed to parse board entities", e);
+            }
             return board;
         }
     }

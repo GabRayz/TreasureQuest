@@ -75,6 +75,24 @@ class BoardParserTest {
     }
 
     @Test
+    void parseBoardTreasureInvalidParts() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "T - 1 - 1 - 1 - invalid parts"));
+    }
+
+    @Test
+    void parseBoardMountainInvalidParts() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "M - 1 - 1 - invalid parts"));
+    }
+
+    @Test
+    void parseBoardTreasureInvalidPositions() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "T - a - b - 2"));
+    }
+
+    @Test
     void parseBoardAdventurer() throws MapParsingException {
         final Board board = new BoardParser().parse("C - 2 - 2\n" +
                 "A - John - 1 - 1 - S - AD");
@@ -98,6 +116,30 @@ class BoardParserTest {
     @Test
     void parseBoardAdventurerInvalidMoves() {
         Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
-                "A - John - 1 - 1 - A - WWW"));
+                "A - John - 1 - 1 - E - WWW"));
+    }
+
+    @Test
+    void parseBoardAdventurerInvalidParts() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "A - John - 1 - 1 - A - WWW - invalid part"));
+    }
+
+    @Test
+    void parseBoardUnknownPrefix() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "X - 1 - 1"));
+    }
+
+    @Test
+    void parseBoardNoMapSize() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("M - 1 - 1"));
+    }
+
+    @Test
+    void parseBoardTwoMountainsAtSamePosition() {
+        Assertions.assertThrows(MapParsingException.class, () -> new BoardParser().parse("C - 2 - 2\n" +
+                "M - 1 - 2\n" +
+                "M - 1 - 2"));
     }
 }
